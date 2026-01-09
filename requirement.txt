@@ -1,0 +1,8 @@
+
+djangorestframework
+django-environ
+django-cors-headers
+drf-yasg
+celery
+
+django-seed
