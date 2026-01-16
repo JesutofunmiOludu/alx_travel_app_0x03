@@ -3,6 +3,7 @@ djangorestframework
 django-environ
 django-cors-headers
 drf-yasg
+drf-spectacular
 celery
-
+requests
 django-seed
