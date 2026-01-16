@@ -32,13 +32,13 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-<<<<<<< HEAD
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-ah0*=yog3y7_0a+mz&dp!wt-*372jd1mtb$8xhce$r$w3onak#')
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-ah0*=yog3y7_0a+mz&dp!wt-*372jd1mtb$8xhce$r$w3onak#')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = env.bool('DEBUG', default=True)
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '[::1]'])
 
 if not DEBUG:
     # Security settings for production
@@ -52,16 +52,6 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = 'DENY'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1]').split(' ')
-=======
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-ah0*=yog3y7_0a+mz&dp!wt-*372jd1mtb$8xhce$r$w3onak#')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=True)
-
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
->>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44
-
 
 # Application definition
 
@@ -73,17 +63,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'alx_travel_app.listings',
+    'listings',
     'corsheaders',
     'drf_yasg',
-<<<<<<< HEAD
     'rabbitmq',
     #'django-seed',
-=======
-    #'rabbitmq',
     'drf_spectacular',
-
->>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44
 
 ]
 
@@ -92,11 +77,8 @@ CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=True)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-<<<<<<< HEAD
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-=======
     'corsheaders.middleware.CorsMiddleware',
->>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -1,15 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-<<<<<<< HEAD:listings/views.py
-from .models import Listing, Review, Booking , Payment
-from .serializers import ListingSerializer, ReviewSerializer, BookingSerializer ,PaymentSerializer
-from rest_framework import viewsets, views
-from rest_framework.views import APIView
-import uuid
-import requests
-from django.conf import settings
-=======
 from rest_framework.views import APIView
 from rest_framework import viewsets
 from django.conf import settings
@@ -18,7 +9,6 @@ import requests
 
 from .models import Listing, Review, Booking, Payment
 from .serializers import ListingSerializer, ReviewSerializer, BookingSerializer, PaymentSerializer
->>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44:alx_travel_app/listings/views.py
 
 
 # Create your views here.
@@ -178,20 +168,6 @@ class VerifyChapaPayment(APIView):
 
         return Response({"chapa_response": chapa_resp, "updated_payment": PaymentSerializer(payment).data if payment else None})
 
-<<<<<<< HEAD:listings/views.py
-class ChapaCallback(APIView):
-    """
-    Handle Chapa callback (redirect)
-    """
-    def get(self, request):
-        tx_ref = request.GET.get("tx_ref")
-        status_param = request.GET.get("status")
-        return Response({
-            "tx_ref": tx_ref, 
-            "status": status_param, 
-            "message": "Payment callback received. Please return to the app to verify status."
-        }, status=status.HTTP_200_OK)
-=======
 
 class ChapaCallback(APIView):
     """
@@ -249,4 +225,3 @@ class ChapaCallback(APIView):
             "message": "Webhook received",
             "payment_status": payment.status
         }, status=status.HTTP_200_OK)
->>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44:alx_travel_app/listings/views.py
