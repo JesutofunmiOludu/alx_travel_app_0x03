@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+<<<<<<< HEAD:listings/views.py
 from .models import Listing, Review, Booking , Payment
 from .serializers import ListingSerializer, ReviewSerializer, BookingSerializer ,PaymentSerializer
 from rest_framework import viewsets, views
@@ -8,6 +9,16 @@ from rest_framework.views import APIView
 import uuid
 import requests
 from django.conf import settings
+=======
+from rest_framework.views import APIView
+from rest_framework import viewsets
+from django.conf import settings
+import uuid
+import requests
+
+from .models import Listing, Review, Booking, Payment
+from .serializers import ListingSerializer, ReviewSerializer, BookingSerializer, PaymentSerializer
+>>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44:alx_travel_app/listings/views.py
 
 
 # Create your views here.
@@ -24,49 +35,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-"""
-@api_view(['GET'])
-def listing_list(request):
-    listings = Listing.objects.all()
-    serializer = ListingSerializer(listings, many=True)
-    return Response(serializer.data)
-@api_view(['GET'])
-def listing_detail(request, pk):
-    try:
-        listing = Listing.objects.get(property_id=pk)
-    except Listing.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = ListingSerializer(listing)
-    return Response(serializer.data)
-@api_view(['POST'])
-def listing_create(request):
-    serializer = ListingSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-@api_view(['PUT'])
-def listing_update(request, pk):
-        try:
-        listing = Listing.objects.get(property_id=pk)
-    except Listing.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ListingSerializer(listing, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-@api_view(['DELETE'])
-def listing_delete(request, pk):
-    try:
-        listing = Listing.objects.get(property_id=pk)
-    except Listing.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    listing.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
-    """
 
 class InitiateChapaPayment(APIView):
     """
@@ -192,6 +161,7 @@ class VerifyChapaPayment(APIView):
             except Payment.DoesNotExist:
                 payment = None
 
+
         # update payment record based on status
         if payment:
             if payment_status and payment_status.lower() == "success":
@@ -208,6 +178,7 @@ class VerifyChapaPayment(APIView):
 
         return Response({"chapa_response": chapa_resp, "updated_payment": PaymentSerializer(payment).data if payment else None})
 
+<<<<<<< HEAD:listings/views.py
 class ChapaCallback(APIView):
     """
     Handle Chapa callback (redirect)
@@ -220,3 +191,62 @@ class ChapaCallback(APIView):
             "status": status_param, 
             "message": "Payment callback received. Please return to the app to verify status."
         }, status=status.HTTP_200_OK)
+=======
+
+class ChapaCallback(APIView):
+    """
+    Handle Chapa payment webhook callbacks.
+    Chapa will POST to this endpoint when a payment status changes.
+    """
+
+    def post(self, request):
+        # Chapa typically sends webhook data in request body
+        # The exact structure depends on Chapa's webhook documentation
+        data = request.data
+        
+        # Common fields from Chapa webhooks
+        tx_ref = data.get("tx_ref") or data.get("reference")
+        status_from_webhook = data.get("status")
+        chapa_tx_id = data.get("id") or data.get("transaction_id")
+        
+        if not tx_ref:
+            return Response({"detail": "tx_ref required in webhook"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Find the payment record
+        try:
+            payment = Payment.objects.get(chapa_tx_ref=tx_ref)
+        except Payment.DoesNotExist:
+            return Response({"detail": "Payment not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Update payment status based on webhook
+        if status_from_webhook:
+            if status_from_webhook.lower() == "success":
+                payment.status = Payment.STATUS_COMPLETED
+                
+                # Optional: Trigger email notification using Celery
+                # Uncomment if you want to send confirmation emails
+                # from .tasks import send_payment_confirmation_email
+                # send_payment_confirmation_email.delay(
+                #     to_email="customer@example.com",  # Get from booking/user data
+                #     booking_reference=payment.booking_reference,
+                #     amount=str(payment.amount)
+                # )
+                
+            elif status_from_webhook.lower() in ("failed", "cancelled"):
+                payment.status = Payment.STATUS_FAILED
+            else:
+                # Keep current status but log the webhook
+                pass
+        
+        # Store webhook data in metadata
+        payment.metadata = data
+        if chapa_tx_id and not payment.chapa_tx_id:
+            payment.chapa_tx_id = chapa_tx_id
+        payment.save()
+        
+        # Return 200 OK to acknowledge receipt of webhook
+        return Response({
+            "message": "Webhook received",
+            "payment_status": payment.status
+        }, status=status.HTTP_200_OK)
+>>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44:alx_travel_app/listings/views.py

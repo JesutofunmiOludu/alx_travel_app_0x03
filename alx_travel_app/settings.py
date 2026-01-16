@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import environ
 
 """
 Django settings for alx_travel_app project.
@@ -13,16 +14,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialize environment variables
+env = environ.Env(
+    # Set default values and casting
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+)
+
+# Read .env file if it exists
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-ah0*=yog3y7_0a+mz&dp!wt-*372jd1mtb$8xhce$r$w3onak#')
 
@@ -43,6 +53,14 @@ if not DEBUG:
     X_FRAME_OPTIONS = 'DENY'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1]').split(' ')
+=======
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-ah0*=yog3y7_0a+mz&dp!wt-*372jd1mtb$8xhce$r$w3onak#')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env.bool('DEBUG', default=True)
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+>>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44
 
 
 # Application definition
@@ -55,17 +73,30 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'listings',
+    'alx_travel_app.listings',
     'corsheaders',
     'drf_yasg',
+<<<<<<< HEAD
     'rabbitmq',
     #'django-seed',
+=======
+    #'rabbitmq',
+    'drf_spectacular',
+
+>>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44
 
 ]
 
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=True)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+<<<<<<< HEAD
     'whitenoise.middleware.WhiteNoiseMiddleware',
+=======
+    'corsheaders.middleware.CorsMiddleware',
+>>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -104,8 +135,9 @@ DATABASES = {
     }
 }
 
-CHAPA_SECRET_KEY = os.environ.get("CHAPA_SECRET_KEY")
-CHAPA_BASE_URL = os.environ.get("CHAPA_BASE_URL", "https://api.chapa.co/v1")
+# Chapa Payment Gateway Configuration
+CHAPA_SECRET_KEY = env('CHAPA_SECRET_KEY', default='')
+CHAPA_BASE_URL = env('CHAPA_BASE_URL', default='https://api.chapa.co/v1')
 
 
 # Password validation

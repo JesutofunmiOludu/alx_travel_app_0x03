@@ -2,9 +2,15 @@ djangorestframework
 django-environ
 django-cors-headers
 drf-yasg
+drf-spectacular
 celery
+<<<<<<< HEAD
 redis
 django-seed
 gunicorn
 whitenoise
 gevent
+=======
+requests
+django-seed
+>>>>>>> 7600a099a26db51fdc361f166f885edc3900ff44
