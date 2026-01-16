@@ -1,8 +1,10 @@
-
 djangorestframework
 django-environ
 django-cors-headers
 drf-yasg
 celery
-
+redis
 django-seed
+gunicorn
+whitenoise
+gevent

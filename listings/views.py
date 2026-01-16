@@ -3,7 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Listing, Review, Booking , Payment
 from .serializers import ListingSerializer, ReviewSerializer, BookingSerializer ,PaymentSerializer
-from rest_framework import viewsets
+from rest_framework import viewsets, views
+from rest_framework.views import APIView
+import uuid
+import requests
+from django.conf import settings
 
 
 # Create your views here.
@@ -203,3 +207,16 @@ class VerifyChapaPayment(APIView):
             payment.save()
 
         return Response({"chapa_response": chapa_resp, "updated_payment": PaymentSerializer(payment).data if payment else None})
+
+class ChapaCallback(APIView):
+    """
+    Handle Chapa callback (redirect)
+    """
+    def get(self, request):
+        tx_ref = request.GET.get("tx_ref")
+        status_param = request.GET.get("status")
+        return Response({
+            "tx_ref": tx_ref, 
+            "status": status_param, 
+            "message": "Payment callback received. Please return to the app to verify status."
+        }, status=status.HTTP_200_OK)

@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: alx-travel-app
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn alx_travel_app.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: alx_travel_app.settings
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*" # Update this to your specific domain in production
+    plan: free
+
+  - type: worker
+    name: alx-travel-worker
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "celery -A alx_travel_app worker --loglevel=info"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: alx_travel_app.settings

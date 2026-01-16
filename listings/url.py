@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ListingViewSet, BookingViewSet, ReviewViewSet
+from .views import ListingViewSet, BookingViewSet, ReviewViewSet, InitiateChapaPayment, VerifyChapaPayment, ChapaCallback
 
 router = DefaultRouter()
 # example: register a viewset later
